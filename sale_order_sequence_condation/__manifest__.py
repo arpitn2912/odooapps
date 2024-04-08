@@ -2,7 +2,7 @@
 
 {
     "name"        :"sale_order_sequence_condation",
-    "author"      :"Ascetic Business Solution",
+    "author"      :"Aon",
     "category"    :"Website",
     "summary"     :"""sale_order_sequence_condation""",
     
@@ -13,8 +13,7 @@
                     "data/ir_sequence_data.xml",
                     "views/sale_order_view.xml"
                    ],
-    
-    "license": "AGPL-3",
+  
     "installable" :True,
     "application" :True,
     "auto_install":False,
