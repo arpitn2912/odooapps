@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="facility_booked_tree_view" model="ir.ui.view">
+            <field name="name">facility.booked.tree</field>
+            <field name="model">facility.booked</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="availability_date_begin"/>
+                    <field name="availability_date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="facility_booked_kanban_view" model="ir.ui.view">
+            <field name="name">facility.booked.kanban</field>
+            <field name="model">facility.booked</field>
+            <field name="arch" type="xml">
+                <kanban class="o_event_kanban_view"  sample="1">
+                    <field name="name"/>
+                    <field name="availability_date_begin"/>
+                    <field name="availability_date_end"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="d-flex flex-column p-0 oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_content p-0 m-0 position-relative row d-flex flex-fill">
+                                    <div class="col-3 text-bg-primary p-2 text-center d-flex flex-column justify-content-center">
+                                        <div t-esc="luxon.DateTime.fromISO(record.availability_date_begin.raw_value).toFormat('d')" class="o_event_fontsize_20"/>
+                                        <div>
+                                            <t t-esc="luxon.DateTime.fromISO(record.availability_date_begin.raw_value).toFormat('MMM yyyy')"/>
+                                        </div>
+                                        <div><t t-esc="luxon.DateTime.fromISO(record.availability_date_begin.raw_value).toFormat('t')"/></div>
+                                            <div t-if="record.availability_date_begin.raw_value !== record.availability_date_end.raw_value">
+                                                <i class="fa fa-arrow-right me-2 o_event_fontsize_09" title="End date"/>
+                                                <t t-esc="luxon.DateTime.fromISO(record.availability_date_end.raw_value).toFormat('d MMM')"/>
+                                            </div>
+                                    </div>
+                                    <div class="col-9 py-2 px-3 d-flex flex-column justify-content-between pt-3">
+                                        <div>
+                                            <div class="o_kanban_record_title o_text_overflow" t-att-title="record.name.value">
+                                                <field name="name"/>
+                                            </div>
+                                        </div>                                     
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+             </field>
+         </record>
+        
+         <record id="facility_booked_calendar_view" model="ir.ui.view">
+            <field name="name">facility.booked.calendar</field>
+            <field name="model">facility.booked</field>
+            <field name="arch" type="xml">
+                <calendar date_start="availability_date_begin" date_stop="availability_date_end" string="Event Organization" mode="month">
+                    <field name="name" avatar_field="avatar_128"/>
+                </calendar>
+            </field>
+         </record>
+
+        <record id="facility_booked_form_view" model="ir.ui.view">
+            <field name="name">facility.booked.form</field>
+            <field name="model">facility.booked</field>
+            <field name="arch" type="xml">
+                    <form>
+                        <header>
+                            <button name="approved" type="object" string="Approve"/>
+                            <button name="cancelled" type="object" string="cancel"/>
+                            <field name="state" widget="statusbar" readonly="0"/>
+                        </header>
+                        <sheet>
+                            <div class="oe_title">
+                                <label for="name" string="Sport Name"/>
+                                <h1><field class="text-break" name="name" required="1" placeholder="e.g. Badminton"/></h1>
+                            </div>
+                            <group>
+                                <group>   
+                                    <label for="availability_date_begin" string="Date"/>
+                                    <div class="o_row">
+                                        <field name="availability_date_begin" required="1" widget="daterange" nolabel="1" class="oe_inline" options="{'related_end_date': 'availability_date_end'}"/>
+                                        <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon" title="Arrow"/>
+                                        <field name="availability_date_end" required="1" widget="daterange" nolabel="1" class="oe_inline" options="{'related_start_date': 'availability_date_begin'}"/>
+                                    </div>
+                                    <field name="facility_listings_id"/>
+                                    <field name="number_of_person"/>
+                                    <field name="state_id"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+            </field>
+        </record>
+        
+        <record id="view_facility_booked_filter" model="ir.ui.view">
+            <field name="name">facility.booked.search</field>
+            <field name="model">facility.booked</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"
+                           string="Facility Name"
+                           filter_domain="[('name', 'ilike', self)]"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="action_facility_booked" model="ir.actions.act_window">
+            <field name="name">Facility Booked</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">facility.booked</field>
+            <field name="view_mode">tree,form,kanban,calendar</field>
+        </record>
+
+        <menuitem id="menu_facility_booked" name="Facility Booked" sequence="2" parent="menu_main" action="action_facility_booked"/>
+
+    </data>
+</odoo>
